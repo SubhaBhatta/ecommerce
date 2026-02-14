@@ -1,4 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../hooks/useAuth";
@@ -61,11 +62,19 @@ export default function ProductDetails() {
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-
   useEffect(() => {
-    fetch(`https://fakestoreapi.com/products/${id}`)
-      .then((res) => res.json())
-      .then(setProduct);
+    const fetchProduct = async () => {
+      try {
+        const { data } = await axios.get(
+          `https://fakestoreapi.com/products/${id}`
+        );
+        setProduct(data);
+      } catch (error) {
+        console.error("Failed to fetch product details", error);
+      }
+    };
+
+    fetchProduct();
   }, [id]);
 
   if (!product) {

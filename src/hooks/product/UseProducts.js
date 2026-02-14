@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { ENDPOINTS } from "../../config/api";
 
@@ -10,12 +11,10 @@ export const useProducts = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await fetch(ENDPOINTS.PRODUCTS);
-        if (!res.ok) throw new Error("Failed to fetch products");
-        const data = await res.json();
+        const { data } = await axios.get(ENDPOINTS.PRODUCTS);
         setProducts(data);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "Failed to fetch products");
       } finally {
         setLoading(false);
       }
